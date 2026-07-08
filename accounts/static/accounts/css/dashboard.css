@@ -276,3 +276,46 @@ body{
 }
 
 }
+
+/* ==========================================================================
+   CSS Additions for Scrollable Table Viewport & Row Density
+   ========================================================================== */
+
+.table-responsive-viewport {
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid #E4E9F0;
+}
+
+/* Make headers stick seamlessly to the top while scrolling */
+.table-responsive-viewport thead th {
+    position: sticky;
+    top: 0;
+    background-color: #F4F7FB;
+    z-index: 2;
+    box-shadow: inset 0 -1px 0 #E4E9F0;
+}
+
+/* Refined row dimensions for dashboard tracking */
+.table-container .table td,
+.table-container .table th {
+    padding: 12px 16px;
+}
+
+/* Subtle focus indicators for action icons */
+.table-container .btn {
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.table-container .btn:hover {
+    opacity: 0.85;
+}
+
+/* Standardize custom link anchor layouts acting as dashboard buttons */
+a.btn-action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}

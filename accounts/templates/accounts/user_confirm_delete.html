@@ -1,0 +1,47 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+Confirm Account Termination
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            
+            <div class="card shadow-sm border-0" style="border-radius: 16px; overflow: hidden;">
+                <div class="p-4 bg-danger text-white text-center" style="background: linear-gradient(135deg, #A82424, #E12A2A) !important;">
+                    <i class="bi bi-exclamation-triangle fs-1 mb-2 d-block"></i>
+                    <h4 class="mb-1 fw-bold">Revoke Access Identity?</h4>
+                    <p class="mb-0 opacity-75 small">This action is irreversible</p>
+                </div>
+
+                <div class="card-body p-4 bg-white text-center">
+                    <p class="text-muted mb-4">
+                        Are you absolutely certain you want to delete the user account for 
+                        <strong class="text-dark d-block fs-5 mt-2 font-monospace">{{ user.username }}</strong> 
+                        {% if user.email %}<span class="small text-muted">({{ user.email }})</span>{% endif %}?
+                    </p>
+
+                    <div class="alert alert-warning border-0 small text-start mb-4" style="background-color: #FFF9E6; color: #7A5C00; border-radius: 10px;">
+                        <i class="bi bi-info-circle-fill me-2"></i> Removing this system entity will instantly revoke their access keys and strip any underlying profile association records from CareSync.
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger py-2.5 fw-semibold shadow-sm" style="border-radius: 10px;">
+                                <i class="bi bi-trash3 me-1"></i> Confirm and Terminate Account
+                            </button>
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-light py-2.5 fw-semibold border" style="border-radius: 10px; color: #4A5568;">
+                                Abort Operational Request
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

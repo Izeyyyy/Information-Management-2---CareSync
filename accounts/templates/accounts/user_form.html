@@ -1,0 +1,71 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            
+            <div class="mb-4">
+                <a href="{% url 'admin_dashboard' %}" class="text-decoration-none text-muted small">
+                    <i class="bi bi-arrow-left"></i> Back to Administrative Dashboard
+                </a>
+            </div>
+
+            <div class="card shadow-sm border-0" style="border-radius: 16px; overflow: hidden;">
+                <div class="p-4 bg-primary text-white text-center" style="background: linear-gradient(135deg, #1E3A5F, #2A7DE1) !important;">
+                    <i class="bi bi-person-gear fs-2 mb-2"></i>
+                    <h4 class="mb-1 fw-bold">{{ title }}</h4>
+                    <p class="mb-0 opacity-75 small">CareSync Identity & Access Control</p>
+                </div>
+
+                <div class="card-body p-4 bg-white">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <h5 class="text-secondary border-bottom pb-2 mb-3" style="font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px;">
+                                <i class="bi bi-shield-lock me-2"></i>CREDENTIAL DETAILS
+                            </h5>
+                            <div class="px-2">
+                                {{ user_form.as_p }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="text-secondary border-bottom pb-2 mb-3" style="font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px;">
+                                <i class="bi bi-person-badge me-2"></i>PROFILE META CONTEXT
+                            </h5>
+                            <div class="px-2">
+                                {{ profile_form.as_p }}
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 mt-5">
+                            <button type="submit" class="btn btn-primary w-100 py-2.5 fw-semibold" style="border-radius: 10px; background: #2A7DE1; border: none;">
+                                <i class="bi bi-check-circle me-1"></i> Commit Modifications
+                            </button>
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-light w-100 py-2.5 fw-semibold border" style="border-radius: 10px; color: #4A5568;">
+                                Cancel Action
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

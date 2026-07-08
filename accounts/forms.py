@@ -65,3 +65,20 @@ class LoginForm(forms.Form):
                 raise ValidationError("Invalid email or password.")
 
         return cleaned_data
+
+class UserForm(forms.ModelForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        required=False,
+        help_text="Leave blank if editing and keeping the same password."
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['middle_initial', 'role']

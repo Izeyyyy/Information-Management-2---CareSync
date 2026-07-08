@@ -7,437 +7,186 @@ Admin Dashboard
 {% block content %}
 
 <div class="sidebar">
-
     <div class="logo">
-
         <i class="bi bi-hospital fs-1"></i>
-
         <h3>CareSync</h3>
-
         <small>Clinic Management System</small>
-
     </div>
-
     <hr>
 
-    <a href="#" class="active">
+    <a href="{% url 'admin_dashboard' %}" class="active">
         <i class="bi bi-speedometer2"></i>
         <span> Dashboard</span>
     </a>
-
-    <a href="#">
+    <a href="{% url 'admin_dashboard' %}">
         <i class="bi bi-people"></i>
         <span> User Management</span>
     </a>
-
     <a href="#">
         <i class="bi bi-heart-pulse"></i>
         <span> Doctors</span>
     </a>
-
     <a href="#">
         <i class="bi bi-person-workspace"></i>
         <span> Clinic Staff</span>
     </a>
-
     <a href="#">
         <i class="bi bi-file-earmark-bar-graph"></i>
         <span> Reports</span>
     </a>
-
     <a href="{% url 'logout' %}">
         <i class="bi bi-box-arrow-right"></i>
         <span> Logout</span>
     </a>
-
 </div>
 
 <div class="main-content">
-
-    <!-- HEADER -->
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <div class="header">
-
         <div>
-
             <h2>Administrator Dashboard</h2>
-
-            <p>
-                Welcome back,
-                <strong>{{ request.user.first_name }}</strong>
-            </p>
-
+            <p>Welcome back, <strong>{{ request.user.first_name }}</strong></p>
         </div>
-
         <div class="profile-box">
-
             <i class="bi bi-bell fs-4"></i>
-
             <div class="profile-circle">
-
                 {{ request.user.first_name|first }}
-
             </div>
-
         </div>
-
     </div>
-
-    <!-- STATISTICS -->
 
     <div class="row g-4">
-
         <div class="col-lg-3">
-
             <div class="dashboard-card">
-
                 <i class="bi bi-people-fill fs-2 text-primary"></i>
-
-                <h6 class="mt-3">
-                    Total Users
-                </h6>
-
-                <h2>
-                    {{ total_users }}
-                </h2>
-
-                <small>
-                    Registered Accounts
-                </small>
-
+                <h6 class="mt-3">Total Users</h6>
+                <h2>{{ total_users }}</h2>
+                <small>Registered Accounts</small>
             </div>
-
         </div>
-
         <div class="col-lg-3">
-
             <div class="dashboard-card">
-
                 <i class="bi bi-heart-pulse-fill fs-2 text-success"></i>
-
-                <h6 class="mt-3">
-
-                    Doctors
-
-                </h6>
-
-                <h2>
-
-                    {{ doctor_count }}
-
-                </h2>
-
-                <small>
-
-                    Active Doctors
-
-                </small>
-
+                <h6 class="mt-3">Doctors</h6>
+                <h2>{{ doctor_count }}</h2>
+                <small>Active Doctors</small>
             </div>
-
         </div>
-
         <div class="col-lg-3">
-
             <div class="dashboard-card">
-
                 <i class="bi bi-person-workspace fs-2 text-info"></i>
-
-                <h6 class="mt-3">
-
-                    Clinic Staff
-
-                </h6>
-
-                <h2>
-
-                    {{ staff_count }}
-
-                </h2>
-
-                <small>
-
-                    Staff Members
-
-                </small>
-
+                <h6 class="mt-3">Clinic Staff</h6>
+                <h2>{{ staff_count }}</h2>
+                <small>Staff Members</small>
             </div>
-
         </div>
-
         <div class="col-lg-3">
-
             <div class="dashboard-card">
-
                 <i class="bi bi-person-check-fill fs-2 text-warning"></i>
-
-                <h6 class="mt-3">
-
-                    Administrators
-
-                </h6>
-
-                <h2>
-
-                    1
-
-                </h2>
-
-                <small>
-
-                    System Administrator
-
-                </small>
-
+                <h6 class="mt-3">Administrators</h6>
+                <h2>1</h2>
+                <small>System Administrator</small>
             </div>
-
         </div>
-
     </div>
-
-    <!-- USER TABLE -->
 
     <div class="table-container">
-
         <div class="table-title">
-
-            <h4>
-
-                Registered Users
-
-            </h4>
-
+            <h4>Registered Users</h4>
             <div class="d-flex gap-2">
-
-                <input
-                        type="text"
-                        class="form-control search-box"
-                        placeholder="Search user...">
-
+                <input type="text" class="form-control search-box" placeholder="Search user...">
                 <select class="form-select">
-
                     <option>All Roles</option>
-
                     <option>Doctor</option>
-
                     <option>Clinic Staff</option>
-
                 </select>
-
             </div>
-
         </div>
 
-        <table class="table table-hover align-middle">
-
-            <thead>
-
-            <tr>
-
-                <th>Name</th>
-
-                <th>Email</th>
-
-                <th>Role</th>
-
-                <th>Actions</th>
-
-            </tr>
-
-            </thead>
-
-            <tbody>
-
-            {% for user in users %}
-
-            <tr>
-
-                <td>
-
-                    {{ user.first_name }}
-                    {{ user.profile.middle_initial }}.
-                    {{ user.last_name }}
-
-                </td>
-
-                <td>
-
-                    {{ user.email }}
-
-                </td>
-
-                <td>
-
-                    {% if user.profile.role == "doctor" %}
-
-                        <span class="role-doctor">
-
-                            Doctor
-
-                        </span>
-
-                    {% elif user.profile.role == "staff" %}
-
-                        <span class="role-staff">
-
-                            Clinic Staff
-
-                        </span>
-
-                    {% else %}
-
-                        <span class="role-admin">
-
-                            Admin
-
-                        </span>
-
-                    {% endif %}
-
-                </td>
-
-                <td>
-
-                    <button class="btn btn-view">
-
-                        <i class="bi bi-eye"></i>
-
-                    </button>
-
-                    <button class="btn btn-edit">
-
-                        <i class="bi bi-pencil"></i>
-
-                    </button>
-
-                    <button class="btn btn-delete">
-
-                        <i class="bi bi-trash"></i>
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="4" class="text-center">
-
-                    No registered users.
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
+        <div class="table-responsive-viewport">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            {{ user.first_name }}
+                            {% if user.profile.middle_initial %}{{ user.profile.middle_initial }}.{% endif %}
+                            {{ user.last_name }}
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.profile.role == "doctor" %}
+                                <span class="role-doctor">Doctor</span>
+                            {% elif user.profile.role == "staff" %}
+                                <span class="role-staff">Clinic Staff</span>
+                            {% else %}
+                                <span class="role-admin">Admin</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'user_edit' user.pk %}" class="btn btn-edit btn-action-link" title="Edit Properties">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% if user != request.user and not user.is_superuser %}
+                            <a href="{% url 'user_delete' user.pk %}" class="btn btn-delete btn-action-link" title="Purge Record">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No registered users exist inside the system context.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <!-- QUICK ACTIONS -->
 
     <div class="quick-actions">
-
         <div class="row g-4">
-
             <div class="col-lg-6">
-
                 <div class="quick-card">
-
-                    <h5>
-
-                        Quick Actions
-
-                    </h5>
-
+                    <h5>Quick Actions</h5>
                     <hr>
-
-                    <button class="btn btn-primary">
-
-                        <i class="bi bi-person-plus-fill"></i>
-
-                        Register Doctor
-
+                    <a href="{% url 'user_create' %}" class="btn btn-primary w-100 mb-2 py-2" style="border-radius: 12px;">
+                        <i class="bi bi-person-plus-fill me-2"></i> Register New System Account (Doctor/Staff)
+                    </a>
+                    <button class="btn btn-secondary w-100 py-2" style="border-radius: 12px;">
+                        <i class="bi bi-file-earmark-bar-graph me-2"></i> Generate System Reports
                     </button>
-
-                    <button class="btn btn-success">
-
-                        <i class="bi bi-person-plus"></i>
-
-                        Register Clinic Staff
-
-                    </button>
-
-                    <button class="btn btn-secondary">
-
-                        <i class="bi bi-file-earmark-bar-graph"></i>
-
-                        Generate Reports
-
-                    </button>
-
                 </div>
-
             </div>
-
             <div class="col-lg-6">
-
                 <div class="quick-card">
-
-                    <h5>
-
-                        System Status
-
-                    </h5>
-
+                    <h5>System Status</h5>
                     <hr>
-
-                    <p>
-
-                        <i class="bi bi-circle-fill text-success"></i>
-
-                        Database Connected
-
-                    </p>
-
-                    <p>
-
-                        <i class="bi bi-circle-fill text-success"></i>
-
-                        Authentication Running
-
-                    </p>
-
-                    <p>
-
-                        <i class="bi bi-circle-fill text-success"></i>
-
-                        CareSync Server Online
-
-                    </p>
-
-                    <p>
-
-                        <i class="bi bi-circle-fill text-success"></i>
-
-                        Supabase Connected
-
-                    </p>
-
+                    <p><i class="bi bi-circle-fill text-success me-2" style="font-size: 12px;"></i> Database Connected</p>
+                    <p><i class="bi bi-circle-fill text-success me-2" style="font-size: 12px;"></i> Authentication Running</p>
+                    <p><i class="bi bi-circle-fill text-success me-2" style="font-size: 12px;"></i> CareSync Server Online</p>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 {% endblock %}
