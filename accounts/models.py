@@ -7,9 +7,13 @@ class Profile(models.Model):
     ROLE_CHOICES = [
         ('staff', 'Clinic Staff'),
         ('doctor', 'Doctor'),
-        ('admin', 'Administrator'),    ]
+    ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="profile"
+    )
 
     middle_initial = models.CharField(max_length=1, blank=True)
 
@@ -20,4 +24,4 @@ class Profile(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user.get_full_name()} ({self.role})"
+        return f"{self.user.get_full_name()} - {self.get_role_display()}"
