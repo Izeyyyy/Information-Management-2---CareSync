@@ -1,0 +1,278 @@
+/* ===========================
+   CareSync Admin Dashboard
+=========================== */
+
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:#F4F7FB;
+    color:#2C3E50;
+}
+
+/* Sidebar */
+
+.sidebar{
+    width:260px;
+    height:100vh;
+    position:fixed;
+    left:0;
+    top:0;
+    background:#1E3A5F;
+    color:white;
+    padding:30px 20px;
+    box-shadow:4px 0 15px rgba(0,0,0,.08);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:45px;
+}
+
+.logo h3{
+    font-weight:700;
+    margin-top:10px;
+}
+
+.sidebar hr{
+    border-color:rgba(255,255,255,.15);
+}
+
+.sidebar a{
+    color:white;
+    text-decoration:none;
+    display:block;
+    padding:14px 18px;
+    margin-bottom:10px;
+    border-radius:12px;
+    transition:.25s;
+    font-size:15px;
+}
+
+.sidebar a:hover{
+    background:#2A7DE1;
+    transform:translateX(5px);
+}
+
+.sidebar a.active{
+    background:#2A7DE1;
+}
+
+/* Main Content */
+
+.main-content{
+    margin-left:260px;
+    padding:35px;
+}
+
+/* Header */
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+}
+
+.header h2{
+    font-weight:700;
+    margin:0;
+}
+
+.header p{
+    color:#7C8BA1;
+    margin-top:5px;
+}
+
+.profile-box{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.profile-circle{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:#2A7DE1;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+}
+
+/* Cards */
+
+.dashboard-card{
+    background:white;
+    border:none;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,.05);
+    transition:.25s;
+    height:100%;
+}
+
+.dashboard-card:hover{
+    transform:translateY(-4px);
+}
+
+.dashboard-card h6{
+    color:#7C8BA1;
+    margin-bottom:10px;
+}
+
+.dashboard-card h2{
+    font-weight:700;
+    color:#1E3A5F;
+}
+
+.dashboard-card small{
+    color:#8E9AAF;
+}
+
+/* User Table */
+
+.table-container{
+    background:white;
+    margin-top:35px;
+    border-radius:18px;
+    box-shadow:0 8px 20px rgba(0,0,0,.05);
+    padding:25px;
+}
+
+.table-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.search-box{
+    width:280px;
+}
+
+.table thead{
+    background:#F4F7FB;
+}
+
+.table th{
+    border:none;
+    color:#5F6E81;
+}
+
+.table td{
+    vertical-align:middle;
+}
+
+/* Badges */
+
+.role-doctor{
+    background:#28A745;
+    color:white;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.role-staff{
+    background:#0D6EFD;
+    color:white;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.role-admin{
+    background:#212529;
+    color:white;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+/* Buttons */
+
+.btn-view{
+    background:#0D6EFD;
+    color:white;
+    border:none;
+}
+
+.btn-edit{
+    background:#FFC107;
+    color:black;
+    border:none;
+}
+
+.btn-delete{
+    background:#DC3545;
+    color:white;
+    border:none;
+}
+
+.btn-view,
+.btn-edit,
+.btn-delete{
+    padding:6px 12px;
+    border-radius:8px;
+    margin-right:4px;
+}
+
+/* Quick Actions */
+
+.quick-actions{
+    margin-top:35px;
+}
+
+.quick-card{
+    background:white;
+    border-radius:18px;
+    box-shadow:0 8px 20px rgba(0,0,0,.05);
+    padding:25px;
+}
+
+.quick-card button{
+    width:100%;
+    margin-bottom:12px;
+    border-radius:12px;
+}
+
+/* Responsive */
+
+@media(max-width:992px){
+
+.sidebar{
+    width:80px;
+}
+
+.sidebar h3,
+.sidebar span{
+    display:none;
+}
+
+.main-content{
+    margin-left:80px;
+}
+
+}
+
+@media(max-width:768px){
+
+.main-content{
+    margin-left:0;
+}
+
+.sidebar{
+    display:none;
+}
+
+.header{
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.search-box{
+    width:100%;
+}
+
+}
