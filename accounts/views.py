@@ -1,57 +1,73 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+
+from .forms import LoginForm, RegistrationForm
 from .models import Profile
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("admin_dashboard")
+
+    if request.method == "POST":
+        form = LoginForm(request, data=request.POST)
+
+        if form.is_valid():
+            login(request, form.user)
+            return redirect("admin_dashboard")
+
+        messages.error(request, "Invalid email or password.")
+
     return render(request, "accounts/login.html")
 
 
 def register_view(request):
-
     if request.method == "POST":
+        form = RegistrationForm(request.POST)
 
-        first_name = request.POST.get("first_name")
-        middle_initial = request.POST.get("middle_initial")
-        last_name = request.POST.get("last_name")
-        email = request.POST.get("email")
-        role = request.POST.get("role")
-        password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data["email"],
+                first_name=form.cleaned_data["first_name"].strip(),
+                last_name=form.cleaned_data["last_name"].strip(),
+                email=form.cleaned_data["email"],
+                password=form.cleaned_data["password"],
+            )
 
-        # Required fields
-        if not all([first_name, last_name, email, role, password, confirm_password]):
-            messages.error(request, "Please fill in all required fields.")
-            return render(request, "accounts/registration.html")
+            Profile.objects.create(
+                user=user,
+                middle_initial=form.cleaned_data["middle_initial"].strip().upper(),
+                role=form.cleaned_data["role"],
+            )
 
-        # Password validation
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match.")
-            return render(request, "accounts/registration.html")
+            messages.success(request, "Registration successful. You may now log in.")
+            return redirect("login")
 
-        # Duplicate email check
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "An account with this email already exists.")
-            return render(request, "accounts/registration.html")
-
-        # Create Django User
-        user = User.objects.create_user(
-            username=email,          # Email will serve as username
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password
-        )
-
-        # Create Profile
-        Profile.objects.create(
-            user=user,
-            middle_initial=middle_initial,
-            role=role
-        )
-
-        messages.success(request, "Registration successful. You may now log in.")
-        return redirect("login")
+        for errors in form.errors.values():
+            for error in errors:
+                messages.error(request, error)
 
     return render(request, "accounts/registration.html")
+
+
+@login_required
+def admin_dashboard_view(request):
+    users = User.objects.select_related("profile").order_by("last_name", "first_name")
+
+    context = {
+        "total_users": users.count(),
+        "doctor_count": Profile.objects.filter(role="doctor").count(),
+        "staff_count": Profile.objects.filter(role="staff").count(),
+        "users": users,
+    }
+
+    return render(request, "accounts/admin_dashboard.html", context)
+
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, "You have been logged out.")
+    return redirect("login")

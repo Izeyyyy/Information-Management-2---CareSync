@@ -25,15 +25,19 @@ Login
                 </div>
             {% endfor %}
         {% endif %}
-        <form>
+        <form method="POST">
+
+            {% csrf_token %}
 
             <div class="mb-3">
 
                 <label>Email</label>
 
                 <input
-                    type="email"
+                    type="text"
                     class="form-control"
+                    name="email"
+                    required
                 >
 
             </div>
@@ -45,11 +49,13 @@ Login
                 <input
                     type="password"
                     class="form-control"
+                    name="password"
+                    required
                 >
 
             </div>
 
-            <button class="btn btn-primary w-100">
+            <button type="submit" class="btn btn-primary w-100">
 
                 Login
 
@@ -58,12 +64,6 @@ Login
         </form>
 
         <div class="text-center mt-3">
-
-            <a href="#">Forgot Password?</a>
-
-        </div>
-
-        <div class="text-center mt-2">
 
             Don't have an account?
 

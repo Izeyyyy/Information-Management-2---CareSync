@@ -7,7 +7,7 @@ class Profile(models.Model):
     ROLE_CHOICES = [
         ('staff', 'Clinic Staff'),
         ('doctor', 'Doctor'),
-    ]
+        ('admin', 'Administrator'),    ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
