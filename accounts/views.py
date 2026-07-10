@@ -66,35 +66,72 @@ def login_view(request):
 
 
 def register_view(request):
+
     if request.method == "POST":
+
         form = RegistrationForm(request.POST)
+
 
         if form.is_valid():
 
             request.session["registration_data"] = {
-                "first_name": form.cleaned_data["first_name"].strip(),
-                "middle_initial": form.cleaned_data["middle_initial"].strip().upper(),
-                "last_name": form.cleaned_data["last_name"].strip(),
-                "email": form.cleaned_data["email"].lower(),
-                "password": form.cleaned_data["password"],
-                "role": form.cleaned_data["role"],
+
+                "first_name":
+                    form.cleaned_data["first_name"].strip(),
+
+                "middle_initial":
+                    form.cleaned_data["middle_initial"].strip().upper(),
+
+                "last_name":
+                    form.cleaned_data["last_name"].strip(),
+
+                "email":
+                    form.cleaned_data["email"],
+
+                "password":
+                    form.cleaned_data["password"],
+
+                "role":
+                    form.cleaned_data["role"],
             }
 
-            if form.cleaned_data["role"] == "doctor":
-                return redirect("doctor_registration")
 
-            return redirect("staff_registration")
+            if form.cleaned_data["role"] == "doctor":
+
+                return redirect(
+                    "doctor_registration"
+                )
+
+
+            elif form.cleaned_data["role"] == "staff":
+
+                return redirect(
+                    "staff_registration"
+                )
+
 
         for errors in form.errors.values():
+
             for error in errors:
-                messages.error(request, error)
+
+                messages.error(
+                    request,
+                    error
+                )
+
 
     else:
+
         form = RegistrationForm()
 
-    return render(request, "accounts/registration.html", {
-        "form": form,
-    })
+
+    return render(
+        request,
+        "accounts/registration.html",
+        {
+            "form": form
+        }
+    )
 
 
 @user_passes_test(is_admin)

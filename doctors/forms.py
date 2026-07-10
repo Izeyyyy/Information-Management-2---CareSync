@@ -41,8 +41,8 @@ class DoctorProfileForm(forms.ModelForm):
             "license_number": forms.TextInput(
                 attrs={"class": "form-control"}
             ),
-            "specialization": forms.TextInput(
-                attrs={"class": "form-control"}
+            "specialization": forms.Select(
+                attrs={"class": "form-select"}
             ),
             "availability_status": forms.Select(
                 attrs={"class": "form-select"}
@@ -63,7 +63,7 @@ class DoctorRegistrationForm(forms.ModelForm):
             "license_number": forms.TextInput(
                 attrs={"class": "form-control"}
             ),
-            "specialization": forms.TextInput(
-                attrs={"class": "form-control"}
+            "specialization": forms.Select(
+                attrs={"class": "form-select"}
             ),
         }
