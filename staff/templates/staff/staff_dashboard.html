@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clinic Staff Dashboard</title>
+</head>
+<body>
+
+<h1>Clinic Staff Dashboard</h1>
+
+<p>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}</p>
+
+{% if staff %}
+<ul>
+    <li><strong>Date Hired:</strong> {{ staff.date_hired }}</li>
+    <li><strong>Schedule:</strong> {{ staff.schedule }}</li>
+</ul>
+{% endif %}
+
+<hr>
+
+<h3>Temporary Navigation</h3>
+
+<ul>
+    <li>Patient Registration (Coming Soon)</li>
+    <li>Patient Directory (Coming Soon)</li>
+    <li>Consultation Scheduling (Coming Soon)</li>
+    <li>Logout</li>
+</ul>
+
+</body>
+</html>

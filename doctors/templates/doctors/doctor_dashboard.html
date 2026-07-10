@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Dashboard</title>
+</head>
+<body>
+
+<h1>Doctor Dashboard</h1>
+
+<p>Welcome Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</p>
+
+<hr>
+
+<h3>Your Information</h3>
+
+<ul>
+    <li>License Number: {{ doctor.license_number }}</li>
+    <li>Specialization: {{ doctor.specialization }}</li>
+    <li>Status: {{ doctor.availability_status }}</li>
+</ul>
+
+<a href="{% url 'logout' %}">Logout</a>
+
+</body>
+</html>

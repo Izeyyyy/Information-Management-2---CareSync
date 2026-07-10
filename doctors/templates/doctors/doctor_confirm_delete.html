@@ -1,0 +1,27 @@
+<h2>Delete Doctor</h2>
+
+<p>
+
+Delete
+
+<strong>
+
+{{ doctor.user.first_name }}
+
+{{ doctor.user.last_name }}
+
+</strong>
+
+?
+
+</p>
+
+<form method="post">
+
+{% csrf_token %}
+
+<button type="submit">
+Delete
+</button>
+
+</form>

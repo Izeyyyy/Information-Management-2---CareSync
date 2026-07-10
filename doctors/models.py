@@ -17,13 +17,40 @@ class Doctor(models.Model):
         unique=True
     )
 
+    SPECIALIZATION_CHOICES = [
+        ("General Practitioner", "General Practitioner"),
+        ("Family Medicine", "Family Medicine"),
+        ("Internal Medicine", "Internal Medicine"),
+        ("Pediatrics", "Pediatrics"),
+        ("Obstetrics and Gynecology", "Obstetrics and Gynecology"),
+        ("Cardiology", "Cardiology"),
+        ("Dermatology", "Dermatology"),
+        ("Neurology", "Neurology"),
+        ("Orthopedics", "Orthopedics"),
+        ("Ophthalmology", "Ophthalmology"),
+        ("ENT", "Ear, Nose and Throat (ENT)"),
+        ("Psychiatry", "Psychiatry"),
+        ("Radiology", "Radiology"),
+        ("Anesthesiology", "Anesthesiology"),
+        ("Emergency Medicine", "Emergency Medicine"),
+        ("Other", "Other"),
+    ]
+
     specialization = models.CharField(
-        max_length=100
+        max_length=100,
+        choices=SPECIALIZATION_CHOICES,
     )
 
+    STATUS_CHOICES = [
+        ("Available", "Available"),
+        ("Busy", "Busy"),
+        ("Off Duty", "Off Duty"),
+    ]
+
     availability_status = models.CharField(
-        max_length=50,
-        default="Available"
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Available",
     )
 
     def __str__(self):
