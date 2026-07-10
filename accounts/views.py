@@ -15,17 +15,52 @@ def is_admin(user):
 
 
 def login_view(request):
+    # Already logged in? Send them to the correct dashboard.
     if request.user.is_authenticated:
-        return redirect("admin_dashboard")
+        if request.user.is_superuser:
+            return redirect("admin_dashboard")
+
+        try:
+            role = request.user.profile.role
+
+            if role == "doctor":
+                return redirect("doctor_dashboard")
+            elif role == "staff":
+                return redirect("staff_dashboard")
+
+        except Profile.DoesNotExist:
+            logout(request)
+            messages.error(request, "No profile found for this account.")
+            return redirect("login")
 
     if request.method == "POST":
         form = LoginForm(request, data=request.POST)
 
         if form.is_valid():
-            login(request, form.user)
-            return redirect("admin_dashboard")
+            user = form.user
+            login(request, user)
 
-        messages.error(request, "Invalid email or password.")
+            # Administrator
+            if user.is_superuser:
+                return redirect("admin_dashboard")
+
+            try:
+                role = user.profile.role
+
+                if role == "doctor":
+                    return redirect("doctor_dashboard")
+
+                elif role == "staff":
+                    return redirect("staff_dashboard")
+
+                messages.error(request, "Unknown user role.")
+
+            except Profile.DoesNotExist:
+                logout(request)
+                messages.error(request, "No profile found for this account.")
+
+        else:
+            messages.error(request, "Invalid email or password.")
 
     return render(request, "accounts/login.html")
 
@@ -35,31 +70,34 @@ def register_view(request):
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data["email"],
-                first_name=form.cleaned_data["first_name"].strip(),
-                last_name=form.cleaned_data["last_name"].strip(),
-                email=form.cleaned_data["email"],
-                password=form.cleaned_data["password"],
-            )
 
-            Profile.objects.create(
-                user=user,
-                middle_initial=form.cleaned_data["middle_initial"].strip().upper(),
-                role=form.cleaned_data["role"],
-            )
+            request.session["registration_data"] = {
+                "first_name": form.cleaned_data["first_name"].strip(),
+                "middle_initial": form.cleaned_data["middle_initial"].strip().upper(),
+                "last_name": form.cleaned_data["last_name"].strip(),
+                "email": form.cleaned_data["email"].lower(),
+                "password": form.cleaned_data["password"],
+                "role": form.cleaned_data["role"],
+            }
 
-            messages.success(request, "Registration successful. You may now log in.")
-            return redirect("login")
+            if form.cleaned_data["role"] == "doctor":
+                return redirect("doctor_registration")
+
+            return redirect("staff_registration")
 
         for errors in form.errors.values():
             for error in errors:
                 messages.error(request, error)
 
-    return render(request, "accounts/registration.html")
+    else:
+        form = RegistrationForm()
+
+    return render(request, "accounts/registration.html", {
+        "form": form,
+    })
 
 
-@login_required
+@user_passes_test(is_admin)
 def admin_dashboard_view(request):
     users = User.objects.select_related("profile").order_by("last_name", "first_name")
 
@@ -73,6 +111,7 @@ def admin_dashboard_view(request):
     return render(request, "accounts/admin_dashboard.html", context)
 
 
+@login_required
 def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out.")

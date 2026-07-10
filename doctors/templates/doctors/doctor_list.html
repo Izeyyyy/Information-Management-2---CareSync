@@ -1,0 +1,50 @@
+<h1>Doctors</h1>
+
+<a href="{% url 'doctor_create' %}">
+    Add Doctor
+</a>
+
+<table border="1">
+
+<tr>
+    <th>Name</th>
+    <th>License</th>
+    <th>Specialization</th>
+    <th>Status</th>
+    <th>Actions</th>
+</tr>
+
+{% for doctor in doctors %}
+
+<tr>
+
+<td>
+{{ doctor.user.first_name }}
+{{ doctor.user.last_name }}
+</td>
+
+<td>{{ doctor.license_number }}</td>
+
+<td>{{ doctor.specialization }}</td>
+
+<td>{{ doctor.availability_status }}</td>
+
+<td>
+
+<a href="{% url 'doctor_edit' doctor.id %}">
+Edit
+</a>
+
+|
+
+<a href="{% url 'doctor_delete' doctor.id %}">
+Delete
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>

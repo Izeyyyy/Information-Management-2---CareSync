@@ -1,12 +1,27 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.shortcuts import render, redirect, get_object_or_放置
+from django.contrib.auth.models import User
+from accounts.models import Profile
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import ClinicStaff
-from .forms import UserStaffForm, ClinicStaffForm
+from .forms import UserStaffForm, ClinicStaffForm, StaffRegistrationForm
 
+@login_required
+def staff_dashboard_view(request):
+    """Temporary dashboard for Clinic Staff."""
+
+    if not hasattr(request.user, "clinic_staff"):
+        messages.error(request, "Access denied.")
+        return redirect("login")
+
+    staff = request.user.clinic_staff
+
+    return render(request, "staff/staff_dashboard.html", {
+        "staff": staff,
+    })
 
 @login_required
 def staff_list(request):
@@ -45,3 +60,56 @@ def staff_create(request):
         'staff_form': staff_form,
         'title': 'Onboard Clinic Staff Member'
     })
+
+def staff_registration_view(request):
+
+    registration_data = request.session.get("registration_data")
+
+    if not registration_data:
+        messages.error(request, "Please complete the first registration step.")
+        return redirect("registration")
+
+    if request.method == "POST":
+
+        form = StaffRegistrationForm(request.POST)
+
+        if form.is_valid():
+
+            user = User.objects.create_user(
+                username=registration_data["email"],
+                email=registration_data["email"],
+                first_name=registration_data["first_name"],
+                last_name=registration_data["last_name"],
+                password=registration_data["password"],
+            )
+
+            Profile.objects.create(
+                user=user,
+                middle_initial=registration_data["middle_initial"],
+                role="staff",
+            )
+
+            staff = form.save(commit=False)
+            staff.user = user
+            staff.save()
+
+            del request.session["registration_data"]
+
+            messages.success(
+                request,
+                "Registration completed successfully."
+            )
+
+            return redirect("login")
+
+    else:
+
+        form = StaffRegistrationForm()
+
+    return render(
+        request,
+        "staff/staff_registration.html",
+        {
+            "form": form,
+        },
+    )

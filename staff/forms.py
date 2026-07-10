@@ -1,4 +1,3 @@
-from django import models
 from django import forms
 from django.contrib.auth.models import User
 from .models import ClinicStaff
@@ -22,4 +21,27 @@ class ClinicStaffForm(forms.ModelForm):
         widgets = {
             'date_hired': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'schedule': forms.TextInput(attrs={'placeholder': 'e.g., Mon-Fri, 8AM - 5PM', 'class': 'form-control'}),
+        }
+
+class StaffRegistrationForm(forms.ModelForm):
+
+    class Meta:
+        model = ClinicStaff
+        fields = [
+            "date_hired",
+            "schedule",
+        ]
+
+        widgets = {
+            "date_hired": forms.DateInput(
+                attrs={
+                    "type": "date",
+                    "class": "form-control"
+                }
+            ),
+            "schedule": forms.TextInput(
+                attrs={
+                    "class": "form-control"
+                }
+            ),
         }
