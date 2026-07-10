@@ -39,9 +39,9 @@ class StaffRegistrationForm(forms.ModelForm):
                     "class": "form-control"
                 }
             ),
-            "schedule": forms.TextInput(
+            "schedule": forms.Select(
                 attrs={
-                    "class": "form-control"
+                    "class": "form-select"
                 }
             ),
         }
