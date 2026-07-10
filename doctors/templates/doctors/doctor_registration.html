@@ -1,10 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'accounts/base.html' %}
 
-</body>
-</html>
+{% block title %}
+Doctor Registration
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-3">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card shadow">
+
+                <div class="card-body p-5">
+
+                    <h2 class="text-center mb-4">
+                        Doctor Registration
+                    </h2>
+
+
+                    {% if messages %}
+
+                        {% for message in messages %}
+
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+
+                        <!-- License Number -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                License Number
+                            </label>
+
+                            {{ form.license_number }}
+
+                            {% if form.license_number.errors %}
+
+                                <div class="text-danger">
+                                    {{ form.license_number.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+
+                        <!-- Specialization -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Specialization
+                            </label>
+
+                            {{ form.specialization }}
+
+                            {% if form.specialization.errors %}
+
+                                <div class="text-danger">
+                                    {{ form.specialization.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-success w-100">
+
+                            Complete Registration
+
+                        </button>
+
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
