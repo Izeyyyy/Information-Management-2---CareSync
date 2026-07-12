@@ -1,0 +1,258 @@
+{% extends "accounts/dashboard_base.html" %}
+
+{% block title %}
+Patient Records
+{% endblock %}
+
+
+{% block sidebar %}
+
+<div class="logo">
+
+    <small>Clinic Staff</small>
+
+</div>
+
+<hr>
+
+<a href="{% url 'staff_dashboard' %}">
+    Dashboard
+</a>
+
+<a href="{% url 'patient_list' %}" class="active">
+    Patient Records
+</a>
+
+<hr>
+
+<a href="{% url 'logout' %}">
+    Logout
+</a>
+
+{% endblock %}
+
+
+{% block header %}
+
+<div>
+
+    <h2>
+
+        Patient Records
+
+    </h2>
+
+    <p>
+
+        View and manage registered patients.
+
+    </p>
+
+</div>
+
+<div class="profile-box">
+
+    <div>
+
+        <strong>
+
+            {{ request.user.get_full_name }}
+
+        </strong>
+
+        <br>
+
+        {{ request.user.clinic_staff.schedule }}
+
+    </div>
+
+    <div class="profile-circle">
+
+        {{ request.user.first_name|first }}{{ request.user.last_name|first }}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="table-container">
+
+    <div class="table-title">
+
+        <h5>
+
+            Registered Patients
+
+        </h5>
+
+        <div class="d-flex gap-2">
+
+            <form method="GET">
+
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control search-box"
+                    placeholder="Search patient..."
+                    value="{{ search }}">
+
+            </form>
+
+            <a
+                href="{% url 'patient_create' %}"
+                class="btn btn-success">
+
+                Register Patient
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% if patients %}
+
+    <div class="table-responsive-viewport">
+
+        <table class="table align-middle">
+
+            <thead>
+
+            <tr>
+
+                <th>Patient No.</th>
+
+                <th>Name</th>
+
+                <th>Gender</th>
+
+                <th>Birth Date</th>
+
+                <th>Contact</th>
+
+                <th>Date Registered</th>
+
+                <th width="220">
+                    Actions
+                </th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for patient in patients %}
+
+            <tr>
+
+                <td>
+
+                    {{ patient.patient_number }}
+
+                </td>
+
+                <td>
+
+                    {{ patient.full_name }}
+
+                </td>
+
+                <td>
+
+                    {{ patient.get_gender_display }}
+
+                </td>
+
+                <td>
+
+                    {{ patient.birth_date }}
+
+                </td>
+
+                <td>
+
+                    {{ patient.contact_number }}
+
+                </td>
+
+                <td>
+
+                    {{ patient.date_registered }}
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="{% url 'patient_detail' patient.pk %}"
+                        class="btn btn-view btn-sm">
+
+                        View
+
+                    </a>
+
+                    <a
+                        href="{% url 'patient_edit' patient.pk %}"
+                        class="btn btn-edit btn-sm">
+
+                        Edit
+
+                    </a>
+
+                    <a
+                        href="{% url 'patient_delete' patient.pk %}"
+                        class="btn btn-delete btn-sm">
+
+                        Delete
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="text-center py-5">
+
+        <h5>
+
+            No patients found.
+
+        </h5>
+
+        <p class="text-muted">
+
+            Register your first patient to begin building your clinic records.
+
+        </p>
+
+        <a
+            href="{% url 'patient_create' %}"
+            class="btn btn-success mt-3">
+
+            Register Patient
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

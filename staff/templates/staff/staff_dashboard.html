@@ -1,31 +1,311 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Clinic Staff Dashboard</title>
-</head>
-<body>
+```html
+{% extends "accounts/dashboard_base.html" %}
 
-<h1>Clinic Staff Dashboard</h1>
+{% block title %}
+Clinic Staff Dashboard
+{% endblock %}
 
-<p>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}</p>
+{% block sidebar %}
 
-{% if staff %}
-<ul>
-    <li><strong>Date Hired:</strong> {{ staff.date_hired }}</li>
-    <li><strong>Schedule:</strong> {{ staff.schedule }}</li>
-</ul>
-{% endif %}
+<div class="logo">
+
+    <small>Clinic Staff</small>
+
+</div>
 
 <hr>
 
-<h3>Temporary Navigation</h3>
+<a href="{% url 'staff_dashboard' %}" class="active">
+    Dashboard
+</a>
 
-<ul>
-    <li>Patient Registration (Coming Soon)</li>
-    <li>Patient Directory (Coming Soon)</li>
-    <li>Consultation Scheduling (Coming Soon)</li>
-    <li>Logout</li>
-</ul>
 
-</body>
-</html>
+<a href="{% url 'patient_list' %}">
+    Patient Records
+</a>
+
+<hr>
+
+<a href="{% url 'logout' %}">
+    Logout
+</a>
+
+{% endblock %}
+
+
+{% block header %}
+
+<div>
+
+    <h2>
+
+        Welcome back, {{ request.user.first_name }}!
+
+    </h2>
+
+    <p>
+
+        Clinic Staff Dashboard
+
+    </p>
+
+</div>
+
+<div class="profile-box">
+
+    <div>
+
+        <strong>
+
+            {{ request.user.get_full_name }}
+
+        </strong>
+
+        <br>
+
+        {{ staff.schedule }}
+
+    </div>
+
+    <div class="profile-circle">
+
+        {{ request.user.first_name|first }}{{ request.user.last_name|first }}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row g-4">
+
+    <div class="col-md-6">
+
+        <div class="dashboard-card">
+
+            <h6>
+
+                Total Patients
+
+            </h6>
+
+            <h2>
+
+                {{ patient_count }}
+
+            </h2>
+
+            <small>
+
+                Registered patients in the system
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="dashboard-card">
+
+            <h6>
+
+                Registered Today
+
+            </h6>
+
+            <h2>
+
+                {{ today_count }}
+
+            </h2>
+
+            <small>
+
+                Patients added today
+
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="quick-actions">
+
+    <div class="quick-card">
+
+        <h5 class="mb-4">
+
+            Quick Actions
+
+        </h5>
+
+        <button
+            class="btn btn-success"
+            onclick="location.href='{% url 'patient_create' %}'">
+
+            Register New Patient
+
+        </button>
+
+        <button
+            class="btn btn-primary"
+            onclick="location.href='{% url 'patient_list' %}'">
+
+            View Patient Records
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="table-container">
+
+    <div class="table-title">
+
+        <h5>
+
+            Recently Registered Patients
+
+        </h5>
+
+    </div>
+
+    {% if recent_patients %}
+
+    <div class="table-responsive-viewport">
+
+        <table class="table align-middle">
+
+            <thead>
+
+            <tr>
+
+                <th>
+
+                    Patient No.
+
+                </th>
+
+                <th>
+
+                    Name
+
+                </th>
+
+                <th>
+
+                    Gender
+
+                </th>
+
+                <th>
+
+                    Date Registered
+
+                </th>
+
+                <th>
+
+                    Actions
+
+                </th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for patient in recent_patients %}
+
+            <tr>
+
+                <td>
+
+                    {{ patient.patient_number }}
+
+                </td>
+
+                <td>
+
+                    {{ patient.first_name }}
+                    {{ patient.last_name }}
+
+                </td>
+
+                <td>
+
+                    {{ patient.get_gender_display }}
+
+                </td>
+
+                <td>
+
+                    {{ patient.date_registered }}
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="{% url 'patient_detail' patient.pk %}"
+                        class="btn btn-view btn-sm">
+
+                        View
+
+                    </a>
+
+                    <a
+                        href="{% url 'patient_edit' patient.pk %}"
+                        class="btn btn-edit btn-sm">
+
+                        Edit
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="text-center py-5">
+
+        <h5>
+
+            No patients have been registered yet.
+
+        </h5>
+
+        <p class="text-muted">
+
+            Click "Register New Patient" to create the first patient record.
+
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+```
