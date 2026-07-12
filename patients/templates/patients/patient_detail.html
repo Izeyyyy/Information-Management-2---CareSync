@@ -1,0 +1,253 @@
+```html
+{% extends "accounts/dashboard_base.html" %}
+
+{% block title %}
+Patient Details
+{% endblock %}
+
+{% block sidebar %}
+
+<div class="logo">
+
+    <small>Clinic Staff</small>
+
+</div>
+
+<hr>
+
+<a href="{% url 'staff_dashboard' %}">
+    Dashboard
+</a>
+
+<a href="{% url 'patient_list' %}" class="active">
+    Patient Records
+</a>
+
+<hr>
+
+<a href="{% url 'logout' %}">
+    Logout
+</a>
+
+{% endblock %}
+
+
+{% block header %}
+
+<div>
+
+    <h2>
+
+        Patient Details
+
+    </h2>
+
+    <p>
+
+        View the patient's demographic and medical record.
+
+    </p>
+
+</div>
+
+<div class="profile-box">
+
+    <div>
+
+        <strong>
+
+            {{ request.user.get_full_name }}
+
+        </strong>
+
+        <br>
+
+        {{ request.user.clinic_staff.schedule }}
+
+    </div>
+
+    <div class="profile-circle">
+
+        {{ request.user.first_name|first }}{{ request.user.last_name|first }}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+
+    <div class="col-lg-4">
+
+        <div class="dashboard-card">
+
+            <h5 class="mb-4">
+
+                Patient Information
+
+            </h5>
+
+            <p>
+
+                <strong>Patient Number</strong><br>
+
+                {{ patient.patient_number }}
+
+            </p>
+
+            <p>
+
+                <strong>Full Name</strong><br>
+
+                {{ patient.full_name }}
+
+            </p>
+
+            <p>
+
+                <strong>Birth Date</strong><br>
+
+                {{ patient.birth_date }}
+
+            </p>
+
+            <p>
+
+                <strong>Gender</strong><br>
+
+                {{ patient.get_gender_display }}
+
+            </p>
+
+            <p>
+
+                <strong>Contact Number</strong><br>
+
+                {{ patient.contact_number }}
+
+            </p>
+
+            <p>
+
+                <strong>Address</strong><br>
+
+                {{ patient.address }}
+
+            </p>
+
+            <hr>
+
+            <p>
+
+                <strong>Registered By</strong><br>
+
+                {% if patient.created_by_staff %}
+
+                    {{ patient.created_by_staff.user.get_full_name }}
+
+                {% else %}
+
+                    —
+
+                {% endif %}
+
+            </p>
+
+            <p>
+
+                <strong>Date Registered</strong><br>
+
+                {{ patient.date_registered }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-8">
+
+        <div class="table-container">
+
+            <div class="table-title">
+
+                <h5>
+
+                    Consultation History
+
+                </h5>
+
+            </div>
+
+            <div class="text-center py-5">
+
+                <h5>
+
+                    No consultations yet.
+
+                </h5>
+
+                <p class="text-muted">
+
+                    Consultation records created by doctors will appear here.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-container mt-4">
+
+            <div class="table-title">
+
+                <h5>
+
+                    Actions
+
+                </h5>
+
+            </div>
+
+            <div class="d-flex gap-2">
+
+                <a
+                    href="{% url 'patient_edit' patient.pk %}"
+                    class="btn btn-edit">
+
+                    Edit Patient
+
+                </a>
+
+                <a
+                    href="{% url 'patient_delete' patient.pk %}"
+                    class="btn btn-delete">
+
+                    Delete Patient
+
+                </a>
+
+                <a
+                    href="{% url 'patient_list' %}"
+                    class="btn btn-secondary">
+
+                    Back to Patient List
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```

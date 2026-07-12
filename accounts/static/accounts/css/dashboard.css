@@ -319,3 +319,29 @@ a.btn-action-link {
     justify-content: center;
     text-decoration: none;
 }
+
+.sidebar i{
+    width:24px;
+    margin-right:10px;
+}
+
+.sidebar a{
+    display:flex;
+    align-items:center;
+}
+
+.profile-box small{
+    color:#7c8ba1;
+}
+
+.card-title{
+    font-weight:600;
+}
+
+.dashboard-card{
+    border-radius:16px;
+}
+
+.dashboard-card i{
+    color:#2A7DE1;
+}

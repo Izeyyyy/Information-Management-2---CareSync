@@ -16,4 +16,5 @@ urlpatterns = [
 
     path("doctors/", include("doctors.urls")),
     path("staff/", include("staff.urls")),
+    path("patients/", include("patients.urls")),
     ]

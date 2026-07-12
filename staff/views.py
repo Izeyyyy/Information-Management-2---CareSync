@@ -8,20 +8,35 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import ClinicStaff
 from .forms import UserStaffForm, ClinicStaffForm, StaffRegistrationForm
+from patients.models import Patient
+from django.utils import timezone
 
 @login_required
 def staff_dashboard_view(request):
-    """Temporary dashboard for Clinic Staff."""
-
-    if not hasattr(request.user, "clinic_staff"):
-        messages.error(request, "Access denied.")
-        return redirect("login")
 
     staff = request.user.clinic_staff
 
-    return render(request, "staff/staff_dashboard.html", {
+    patients = Patient.objects.all()
+
+    context = {
         "staff": staff,
-    })
+
+        "patient_count": patients.count(),
+
+        "today_count":
+            patients.filter(
+                date_registered=timezone.now().date()
+            ).count(),
+
+        "recent_patients":
+            patients.order_by("-date_registered")[:5],
+    }
+
+    return render(
+        request,
+        "staff/staff_dashboard.html",
+        context,
+    )
 
 @login_required
 def staff_list(request):
