@@ -10,18 +10,18 @@ from django.db import transaction
 from .models import Doctor
 from .forms import UserDoctorForm, DoctorProfileForm, DoctorRegistrationForm
 from accounts.models import Profile
+from django.utils import timezone
+
+from consultations.models import Consultation
+from patients.models import Patient
 
 
 
 def is_admin(user):
     return user.is_authenticated and user.is_superuser
 
-
 @login_required
 def doctor_dashboard_view(request):
-    """
-    Temporary doctor dashboard.
-    """
 
     if not hasattr(request.user, "doctor"):
         messages.error(request, "Access denied.")
@@ -29,14 +29,51 @@ def doctor_dashboard_view(request):
 
     doctor = request.user.doctor
 
+    today = timezone.localdate()
+
+    consultation_count = Consultation.objects.filter(
+        doctor=doctor
+    ).count()
+
+    today_consultations = Consultation.objects.filter(
+        doctor=doctor,
+        consultation_date__date=today,
+    ).count()
+
+    patient_count = (
+        Consultation.objects.filter(
+            doctor=doctor
+        )
+        .values("patient")
+        .distinct()
+        .count()
+    )
+
+    recent_consultations = (
+        Consultation.objects.filter(
+            doctor=doctor
+        )
+        .select_related(
+            "patient",
+            "doctor",
+            "doctor__user",
+        )
+        .order_by("-consultation_date")[:5]
+    )
+
     return render(
         request,
         "doctors/doctor_dashboard.html",
         {
             "doctor": doctor,
+            "consultation_count": consultation_count,
+            "today_consultations": today_consultations,
+            "patient_count": patient_count,
+            "recent_consultations": recent_consultations,
+            "is_staff": False,
+            "is_doctor": True,
         },
     )
-
 
 @user_passes_test(is_admin)
 def doctor_list(request):

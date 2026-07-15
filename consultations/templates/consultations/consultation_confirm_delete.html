@@ -1,0 +1,56 @@
+{% extends "accounts/dashboard_base.html" %}
+
+{% block title %}
+Delete Consultation
+{% endblock %}
+
+{% block header %}
+
+<h2>
+
+Delete Consultation
+
+</h2>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-card text-center">
+
+    <h4>
+
+        Delete this consultation?
+
+    </h4>
+
+    <p>
+
+        This action cannot be undone.
+
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <button
+            class="btn btn-danger">
+
+            Delete Consultation
+
+        </button>
+
+        <a
+            href="{% url 'consultation_detail' consultation.pk %}"
+            class="btn btn-secondary">
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

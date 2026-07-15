@@ -8,16 +8,30 @@ Patient Records
 {% block sidebar %}
 
 <div class="logo">
-
-    <small>Clinic Staff</small>
-
+    <small>
+        {% if is_staff %}
+            Clinic Staff
+        {% else %}
+            Doctor
+        {% endif %}
+    </small>
 </div>
 
 <hr>
 
+{% if is_staff %}
+
 <a href="{% url 'staff_dashboard' %}">
     Dashboard
 </a>
+
+{% else %}
+
+<a href="{% url 'doctor_dashboard' %}">
+    Dashboard
+</a>
+
+{% endif %}
 
 <a href="{% url 'patient_list' %}" class="active">
     Patient Records
@@ -36,16 +50,10 @@ Patient Records
 
 <div>
 
-    <h2>
-
-        Patient Records
-
-    </h2>
+    <h2>Patient Records</h2>
 
     <p>
-
         View and manage registered patients.
-
     </p>
 
 </div>
@@ -55,14 +63,16 @@ Patient Records
     <div>
 
         <strong>
-
             {{ request.user.get_full_name }}
-
         </strong>
 
         <br>
 
-        {{ request.user.clinic_staff.schedule }}
+        {% if is_staff %}
+            {{ request.user.clinic_staff.schedule }}
+        {% else %}
+            {{ request.user.doctor.specialization }}
+        {% endif %}
 
     </div>
 
@@ -102,6 +112,8 @@ Patient Records
 
             </form>
 
+            {% if is_staff %}
+
             <a
                 href="{% url 'patient_create' %}"
                 class="btn btn-success">
@@ -110,10 +122,11 @@ Patient Records
 
             </a>
 
+            {% endif %}
+
         </div>
 
     </div>
-
 
     {% if patients %}
 
@@ -123,101 +136,107 @@ Patient Records
 
             <thead>
 
-            <tr>
+                <tr>
 
-                <th>Patient No.</th>
+                    <th>Patient No.</th>
 
-                <th>Name</th>
+                    <th>Name</th>
 
-                <th>Gender</th>
+                    <th>Gender</th>
 
-                <th>Birth Date</th>
+                    <th>Birth Date</th>
 
-                <th>Contact</th>
+                    <th>Contact</th>
 
-                <th>Date Registered</th>
+                    <th>Date Registered</th>
 
-                <th width="220">
-                    Actions
-                </th>
+                    <th width="220">
 
-            </tr>
+                        Actions
+
+                    </th>
+
+                </tr>
 
             </thead>
 
             <tbody>
 
-            {% for patient in patients %}
+                {% for patient in patients %}
 
-            <tr>
+                <tr>
 
-                <td>
+                    <td>
 
-                    {{ patient.patient_number }}
+                        {{ patient.patient_number }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    {{ patient.full_name }}
+                        {{ patient.full_name }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    {{ patient.get_gender_display }}
+                        {{ patient.get_gender_display }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    {{ patient.birth_date }}
+                        {{ patient.birth_date }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    {{ patient.contact_number }}
+                        {{ patient.contact_number }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    {{ patient.date_registered }}
+                        {{ patient.date_registered }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    <a
-                        href="{% url 'patient_detail' patient.pk %}"
-                        class="btn btn-view btn-sm">
+                        <a
+                            href="{% url 'patient_detail' patient.pk %}"
+                            class="btn btn-view btn-sm">
 
-                        View
+                            View
 
-                    </a>
+                        </a>
 
-                    <a
-                        href="{% url 'patient_edit' patient.pk %}"
-                        class="btn btn-edit btn-sm">
+                        {% if is_staff %}
 
-                        Edit
+                        <a
+                            href="{% url 'patient_edit' patient.pk %}"
+                            class="btn btn-edit btn-sm">
 
-                    </a>
+                            Edit
 
-                    <a
-                        href="{% url 'patient_delete' patient.pk %}"
-                        class="btn btn-delete btn-sm">
+                        </a>
 
-                        Delete
+                        <a
+                            href="{% url 'patient_delete' patient.pk %}"
+                            class="btn btn-delete btn-sm">
 
-                    </a>
+                            Delete
 
-                </td>
+                        </a>
 
-            </tr>
+                        {% endif %}
 
-            {% endfor %}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
 
             </tbody>
 
@@ -241,6 +260,8 @@ Patient Records
 
         </p>
 
+        {% if is_staff %}
+
         <a
             href="{% url 'patient_create' %}"
             class="btn btn-success mt-3">
@@ -248,6 +269,8 @@ Patient Records
             Register Patient
 
         </a>
+
+        {% endif %}
 
     </div>
 

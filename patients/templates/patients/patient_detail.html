@@ -1,23 +1,41 @@
-```html
 {% extends "accounts/dashboard_base.html" %}
 
 {% block title %}
-Patient Details
+Patient Record
 {% endblock %}
+
 
 {% block sidebar %}
 
 <div class="logo">
 
-    <small>Clinic Staff</small>
+    <small>
+
+        {% if is_staff %}
+            Clinic Staff
+        {% else %}
+            Doctor
+        {% endif %}
+
+    </small>
 
 </div>
 
 <hr>
 
+{% if is_staff %}
+
 <a href="{% url 'staff_dashboard' %}">
     Dashboard
 </a>
+
+{% else %}
+
+<a href="{% url 'doctor_dashboard' %}">
+    Dashboard
+</a>
+
+{% endif %}
 
 <a href="{% url 'patient_list' %}" class="active">
     Patient Records
@@ -32,19 +50,20 @@ Patient Details
 {% endblock %}
 
 
+
 {% block header %}
 
 <div>
 
     <h2>
 
-        Patient Details
+        Patient Record
 
     </h2>
 
     <p>
 
-        View the patient's demographic and medical record.
+        View patient information and consultation history.
 
     </p>
 
@@ -62,7 +81,11 @@ Patient Details
 
         <br>
 
-        {{ request.user.clinic_staff.schedule }}
+        {% if is_staff %}
+            {{ request.user.clinic_staff.schedule }}
+        {% else %}
+            {{ request.user.doctor.specialization }}
+        {% endif %}
 
     </div>
 
@@ -77,98 +100,84 @@ Patient Details
 {% endblock %}
 
 
+
 {% block content %}
 
-<div class="row">
+<!-- ================= PATIENT SUMMARY ================= -->
 
-    <div class="col-lg-4">
+<div class="dashboard-card mb-4">
 
-        <div class="dashboard-card">
+    <div class="row align-items-center">
 
-            <h5 class="mb-4">
+    <div class="col-lg-9">
 
-                Patient Information
+        <small class="text-uppercase text-muted">
 
-            </h5>
+            Patient Record
 
-            <p>
+        </small>
 
-                <strong>Patient Number</strong><br>
+        <h2 class="fw-bold mb-2">
 
-                {{ patient.patient_number }}
+            {{ patient.full_name }}
 
-            </p>
+        </h2>
 
-            <p>
+        <p class="text-muted mb-3">
 
-                <strong>Full Name</strong><br>
+            {{ patient.patient_number }}
 
-                {{ patient.full_name }}
+        </p>
 
-            </p>
+        <span class="badge bg-primary me-2">
 
-            <p>
+            {{ patient.get_gender_display }}
 
-                <strong>Birth Date</strong><br>
+        </span>
 
-                {{ patient.birth_date }}
+        <span class="badge bg-secondary">
 
-            </p>
+            {{ patient.age }} Years Old
 
-            <p>
+        </span>
 
-                <strong>Gender</strong><br>
+        <p class="mt-3 mb-1 text-muted">
 
-                {{ patient.get_gender_display }}
+            Registered on {{ patient.date_registered|date:"F d, Y" }}
 
-            </p>
+        </p>
 
-            <p>
+        <p class="mb-0">
 
-                <strong>Contact Number</strong><br>
+            <strong>Total Consultations:</strong>
 
-                {{ patient.contact_number }}
+            {{ consultations.count }}
 
-            </p>
+        </p>
 
-            <p>
+    </div>
 
-                <strong>Address</strong><br>
+    <div class="col-lg-3 text-end">
 
-                {{ patient.address }}
+        <div
+            class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center"
+            style="width:80px;height:80px;font-size:28px;font-weight:bold;">
 
-            </p>
-
-            <hr>
-
-            <p>
-
-                <strong>Registered By</strong><br>
-
-                {% if patient.created_by_staff %}
-
-                    {{ patient.created_by_staff.user.get_full_name }}
-
-                {% else %}
-
-                    —
-
-                {% endif %}
-
-            </p>
-
-            <p>
-
-                <strong>Date Registered</strong><br>
-
-                {{ patient.date_registered }}
-
-            </p>
+            {{ patient.first_name|first }}{{ patient.last_name|first }}
 
         </div>
 
     </div>
 
+</div>
+
+</div>
+
+
+
+<!-- ================= INFORMATION + ACTIONS ================= -->
+
+<div class="row g-4 mb-4">
 
     <div class="col-lg-8">
 
@@ -178,76 +187,291 @@ Patient Details
 
                 <h5>
 
-                    Consultation History
+                    Patient Information
 
                 </h5>
 
             </div>
 
-            <div class="text-center py-5">
+            <div class="p-3">
+                <div class="row mb-3">
 
-                <h5>
+                    <div class="col-md-4 fw-semibold text-muted">
 
-                    No consultations yet.
+                        Birth Date
 
-                </h5>
+                    </div>
 
-                <p class="text-muted">
+                    <div class="col">
 
-                    Consultation records created by doctors will appear here.
+                        {{ patient.birth_date|date:"F d, Y" }}
 
-                </p>
+                    </div>
 
+                </div>
+
+                <div class="row mb-3">
+
+                    <div class="col-md-4 fw-semibold text-muted">
+
+                        Gender
+
+                    </div>
+
+                    <div class="col">
+
+                        {{ patient.get_gender_display }}
+
+                    </div>
+
+                </div>
+
+                <div class="row mb-3">
+
+                    <div class="col-md-4 fw-semibold text-muted">
+
+                        Contact Number
+
+                    </div>
+
+                    <div class="col">
+
+                        {{ patient.contact_number }}
+
+                    </div>
+
+                </div>
+
+                <div class="row mb-3">
+
+                    <div class="col-md-4 fw-semibold text-muted">
+
+                        Address
+
+                    </div>
+
+                    <div class="col">
+
+                        {{ patient.address }}
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 fw-semibold text-muted">
+
+                        Registered By
+
+                    </div>
+
+                    <div class="col">
+
+                        {{ patient.created_by_staff.user.get_full_name }}
+
+                    </div>
+
+                </div>
             </div>
-
         </div>
 
+    </div>
 
-        <div class="table-container mt-4">
 
-            <div class="table-title">
+    <!-- ================= QUICK ACTIONS ================= -->
 
-                <h5>
+        <div class="col-lg-4">
 
-                    Actions
+    <div class="quick-card sticky-top" style="top:20px;">
 
-                </h5>
+        <h5 class="mb-4">
 
-            </div>
+            Quick Actions
 
-            <div class="d-flex gap-2">
+        </h5>
 
-                <a
-                    href="{% url 'patient_edit' patient.pk %}"
-                    class="btn btn-edit">
+        <div class="d-grid gap-3">
 
-                    Edit Patient
+            {% if is_staff %}
 
-                </a>
+            <a
+                href="{% url 'patient_edit' patient.pk %}"
+                class="btn btn-warning">
 
-                <a
-                    href="{% url 'patient_delete' patient.pk %}"
-                    class="btn btn-delete">
+                Edit Patient
 
-                    Delete Patient
+            </a>
 
-                </a>
+            <a
+                href="{% url 'patient_delete' patient.pk %}"
+                class="btn btn-danger">
 
-                <a
-                    href="{% url 'patient_list' %}"
-                    class="btn btn-secondary">
+                Delete Patient
 
-                    Back to Patient List
+            </a>
 
-                </a>
+            {% endif %}
 
-            </div>
+            {% if is_doctor %}
+
+            <a
+                href="{% url 'consultation_create' patient.pk %}"
+                class="btn btn-success">
+
+                New Consultation
+
+            </a>
+
+            {% endif %}
 
         </div>
 
     </div>
 
 </div>
+</div>
+
+
+
+<!-- ================= CONSULTATION HISTORY ================= -->
+
+<div class="table-container">
+
+    <div class="table-title">
+
+        <h5>
+
+            Consultation History
+
+        </h5>
+
+    </div>
+
+    {% if consultations %}
+
+        {% for consultation in consultations %}
+
+        <div class="dashboard-card mb-3">
+
+            <div class="row">
+
+                <div class="col-md-9">
+
+                    <h5>
+
+                        {{ consultation.consultation_date|date:"F d, Y • h:i A" }}
+
+                    </h5>
+
+                    <p class="mb-1">
+
+                        <strong>
+
+                            Doctor:
+
+                        </strong>
+
+                        {{ consultation.doctor.user.get_full_name }}
+
+                    </p>
+
+                    <p class="mb-1">
+
+                        <strong>
+
+                            Chief Complaint:
+
+                        </strong>
+
+                        {{ consultation.chief_complaint|truncatechars:120 }}
+
+                    </p>
+
+                    <p class="mb-0">
+
+                        <strong>
+
+                            Diagnosis:
+
+                        </strong>
+
+                        {{ consultation.diagnosis|truncatechars:120 }}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-3 text-end">
+
+                    <a
+                        href="{% url 'consultation_detail' consultation.pk %}"
+                        class="btn btn-primary">
+
+                        View Consultation
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="text-center py-5">
+
+            <div class="py-3">
+
+                <div style="font-size:55px">
+
+                    🩺
+
+                </div>
+
+            </div>
+
+            <h4>
+
+                No Consultation History
+
+            </h4>
+
+            <p class="text-muted">
+
+                {% if is_doctor %}
+
+                    This patient has not yet been examined.
+
+                    Start by creating the first consultation.
+
+                {% else %}
+
+                    Consultation records will appear here once a doctor has examined this patient.
+
+                {% endif %}
+
+            </p>
+
+            {% if is_doctor %}
+
+           <a
+                href="{% url 'consultation_create' patient.pk %}"
+                class="btn btn-success">
+
+                Create First Consultation
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}
-```

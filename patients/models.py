@@ -1,5 +1,6 @@
 from django.db import models
 from staff.models import ClinicStaff
+from datetime import date
 
 
 class Patient(models.Model):
@@ -65,3 +66,17 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.patient_number} - {self.first_name} {self.last_name}"
+
+    @property
+    def age(self):
+        today = date.today()
+
+        return (
+                today.year
+                - self.birth_date.year
+                - (
+                        (today.month, today.day)
+                        <
+                        (self.birth_date.month, self.birth_date.day)
+                )
+        )
