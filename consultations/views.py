@@ -6,6 +6,7 @@ from django.utils import timezone
 from .models import Consultation
 from .forms import ConsultationForm
 from patients.models import Patient
+from audit_logs.utils import create_audit_log
 
 
 def is_doctor(user):
@@ -44,6 +45,13 @@ def consultation_create(request, patient_pk):
             consultation.consultation_date = timezone.now()
 
             consultation.save()
+
+            create_audit_log(
+                request.user,
+                "create",
+                "Consultation",
+                f"Created consultation for {consultation.patient.full_name}"
+            )
 
             messages.success(
                 request,
@@ -113,6 +121,13 @@ def consultation_edit(request, pk):
 
             form.save()
 
+            create_audit_log(
+                request.user,
+                "update",
+                "Consultation",
+                f"Updated consultation for {consultation.patient.full_name}"
+            )
+
             messages.success(
                 request,
                 "Consultation updated successfully."
@@ -152,6 +167,13 @@ def consultation_delete(request, pk):
     patient = consultation.patient
 
     if request.method == "POST":
+
+        create_audit_log(
+            request.user,
+            "delete",
+            "Consultation",
+            f"Deleted consultation for {consultation.patient.full_name}"
+        )
 
         consultation.delete()
 

@@ -8,6 +8,7 @@ from .forms import LoginForm, RegistrationForm, UserForm, ProfileForm
 from .models import Profile
 from staff.models import ClinicStaff
 from doctors.models import Doctor
+from audit_logs.utils import create_audit_log
 
 
 def is_admin(user):
@@ -39,6 +40,13 @@ def login_view(request):
         if form.is_valid():
             user = form.user
             login(request, user)
+
+            create_audit_log(
+                user,
+                "login",
+                "Authentication",
+                "User logged in successfully"
+            )
 
             # Administrator
             if user.is_superuser:

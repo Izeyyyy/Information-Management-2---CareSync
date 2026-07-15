@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'doctors',
     'patients',
     'consultations',
+    "audit_logs",
 ]
 
 MIDDLEWARE = [
