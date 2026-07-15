@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import PatientForm
 from .models import Patient
+from audit_logs.utils import create_audit_log
 
 def is_staff(user):
     return (
@@ -79,6 +80,13 @@ def patient_create(request):
 
             patient.save()
 
+            create_audit_log(
+                request.user,
+                "create",
+                "Patient",
+                f"Registered patient {patient.patient_number}"
+            )
+
             messages.success(
                 request,
                 "Patient registered successfully."
@@ -150,6 +158,13 @@ def patient_edit(request, pk):
 
             form.save()
 
+            create_audit_log(
+                request.user,
+                "update",
+                "Patient",
+                f"Updated patient {patient.patient_number}"
+            )
+
             messages.success(
                 request,
                 "Patient updated successfully."
@@ -185,6 +200,13 @@ def patient_delete(request, pk):
     )
 
     if request.method == "POST":
+
+        create_audit_log(
+            request.user,
+            "delete",
+            "Patient",
+            f"Deleted patient {patient.patient_number}"
+        )
 
         patient.delete()
 
