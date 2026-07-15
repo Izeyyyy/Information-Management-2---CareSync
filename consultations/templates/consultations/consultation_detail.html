@@ -1,0 +1,487 @@
+{% extends "accounts/dashboard_base.html" %}
+
+{% block title %}
+Consultation Record
+{% endblock %}
+
+
+
+{% block sidebar %}
+
+<div class="logo">
+
+    <small>
+
+        {% if is_staff %}
+            Clinic Staff
+        {% else %}
+            Doctor
+        {% endif %}
+
+    </small>
+
+</div>
+
+
+<hr>
+
+
+{% if is_staff %}
+
+<a href="{% url 'staff_dashboard' %}">
+    Dashboard
+</a>
+
+{% else %}
+
+<a href="{% url 'doctor_dashboard' %}">
+    Dashboard
+</a>
+
+{% endif %}
+
+
+<a href="{% url 'patient_list' %}">
+    Patient Records
+</a>
+
+
+<hr>
+
+
+<a href="{% url 'logout' %}">
+    Logout
+</a>
+
+
+{% endblock %}
+
+
+
+
+{% block header %}
+
+<div>
+
+    <h2>
+        Consultation Record
+    </h2>
+
+
+    <p>
+        Consultation details for {{ consultation.patient_name }}
+    </p>
+
+</div>
+
+
+
+<div class="profile-box">
+
+    <div>
+
+        <strong>
+            {{ request.user.get_full_name }}
+        </strong>
+
+
+        <br>
+
+
+        {% if is_staff %}
+
+            {{ request.user.clinic_staff.schedule }}
+
+        {% else %}
+
+            {{ request.user.doctor.specialization }}
+
+        {% endif %}
+
+
+    </div>
+
+
+
+    <div class="profile-circle">
+
+        {{ request.user.first_name|first }}{{ request.user.last_name|first }}
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+{% block content %}
+
+
+
+<!-- Consultation Summary -->
+
+<div class="dashboard-card mb-4">
+
+
+    <div class="row">
+
+
+        <div class="col-lg-8">
+
+
+            <small class="text-uppercase text-muted">
+
+                Consultation
+
+            </small>
+
+
+
+            <h2 class="fw-bold">
+
+                {{ consultation.patient_name }}
+
+            </h2>
+
+
+
+            <p class="text-muted mb-0">
+
+                {{ consultation.patient.patient_number }}
+
+                <br>
+
+                {{ consultation.patient.get_gender_display }}
+
+            </p>
+
+
+        </div>
+
+
+
+
+        <div class="col-lg-4 text-end">
+
+
+            <span class="badge rounded-pill bg-success px-3 py-2">
+
+                {{ consultation.consultation_date|date:"F d, Y - h:i A" }}
+
+            </span>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+<div class="row g-4">
+
+
+
+    <!-- Main Consultation Information -->
+
+
+    <div class="col-lg-8">
+
+
+
+        <div class="table-container mb-4">
+
+
+
+            <div class="table-title">
+
+                <h5>
+                    Consultation Details
+                </h5>
+
+            </div>
+
+
+
+
+            <div class="p-4">
+
+
+
+                <!-- Doctor -->
+
+                <div class="mb-4">
+
+
+                    <h6 class="text-muted">
+
+                        Attending Doctor
+
+                    </h6>
+
+
+
+                    <p class="mb-0">
+
+
+                        {{ consultation.doctor.user.get_full_name }}
+
+
+                        <br>
+
+
+                        <small class="text-muted">
+
+                            {{ consultation.doctor.specialization }}
+
+                        </small>
+
+
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                <!-- Chief Complaint -->
+
+                <div class="mb-4">
+
+
+                    <h6 class="text-muted">
+
+                        Chief Complaint
+
+                    </h6>
+
+
+
+                    <p class="mb-0">
+
+                        {{ consultation.chief_complaint|default:"No complaint recorded." }}
+
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                <!-- Diagnosis -->
+
+                <div class="mb-4">
+
+
+                    <h6 class="text-muted">
+
+                        Diagnosis
+
+                    </h6>
+
+
+
+                    <p class="mb-0">
+
+                        {{ consultation.diagnosis|default:"No diagnosis recorded." }}
+
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                <!-- Treatment Plan -->
+
+                <div class="mb-4">
+
+
+                    <h6 class="text-muted">
+
+                        Treatment Plan
+
+                    </h6>
+
+
+
+                    <p class="mb-0">
+
+                        {{ consultation.treatment_plan|default:"No treatment plan recorded." }}
+
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                <!-- Medications -->
+
+                <div class="mb-4">
+
+
+                    <h6 class="text-muted">
+
+                        Prescribed Medications
+
+                    </h6>
+
+
+
+                    <p class="mb-0">
+
+                        {{ consultation.prescribed_medications|default:"None" }}
+
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                <!-- Notes -->
+
+                <div class="mb-0">
+
+
+                    <h6 class="text-muted">
+
+                        Consultation Notes
+
+                    </h6>
+
+
+
+                    <p class="mb-0">
+
+                        {{ consultation.consultation_notes|default:"No notes provided." }}
+
+                    </p>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Actions Sidebar -->
+
+
+    <div class="col-lg-4">
+
+
+
+        <div class="quick-card sticky-top" style="top:20px;">
+
+
+
+            <h5 class="mb-4">
+
+                Quick Actions
+
+            </h5>
+
+
+
+
+            <div class="d-grid gap-3">
+
+
+
+                <a
+                    href="{% url 'patient_detail' consultation.patient.pk %}"
+                    class="btn btn-secondary">
+
+                    Back to Patient
+
+                </a>
+
+
+
+
+
+                {% if is_doctor %}
+
+
+
+                <a
+                    href="{% url 'consultation_edit' consultation.pk %}"
+                    class="btn btn-warning">
+
+                    Edit Consultation
+
+                </a>
+
+
+
+
+                <a
+                    href="{% url 'consultation_delete' consultation.pk %}"
+                    class="btn btn-danger">
+
+                    Delete Consultation
+
+                </a>
+
+
+
+                {% endif %}
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+</div>
+
+
+
+
+{% endblock %}

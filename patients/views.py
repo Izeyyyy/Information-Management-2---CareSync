@@ -6,7 +6,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PatientForm
 from .models import Patient
 
-
 def is_staff(user):
     return (
         user.is_authenticated
@@ -14,8 +13,18 @@ def is_staff(user):
         and user.profile.role == "staff"
     )
 
+def is_staff_or_doctor(user):
+    return (
+        user.is_authenticated
+        and hasattr(user, "profile")
+        and (
+            user.profile.role == "staff"
+            or user.profile.role == "doctor"
+        )
+    )
 
-@user_passes_test(is_staff)
+
+@user_passes_test(is_staff_or_doctor)
 def patient_list(request):
 
     search = request.GET.get("search", "").strip()
@@ -40,6 +49,8 @@ def patient_list(request):
         {
             "patients": patients,
             "search": search,
+            "is_staff": request.user.profile.role == "staff",
+            "is_doctor": request.user.profile.role == "doctor",
         },
     )
 
@@ -88,11 +99,13 @@ def patient_create(request):
         {
             "form": form,
             "title": "Register Patient",
+            "is_staff": True,
+            "is_doctor": False,
         },
     )
 
 
-@user_passes_test(is_staff)
+@user_passes_test(is_staff_or_doctor)
 def patient_detail(request, pk):
 
     patient = get_object_or_404(
@@ -100,11 +113,20 @@ def patient_detail(request, pk):
         pk=pk
     )
 
+    consultations = (
+        patient.consultations
+        .select_related("doctor", "doctor__user")
+        .order_by("-consultation_date")
+    )
+
     return render(
         request,
         "patients/patient_detail.html",
         {
             "patient": patient,
+            "consultations": consultations,
+            "is_staff": request.user.profile.role == "staff",
+            "is_doctor": request.user.profile.role == "doctor",
         },
     )
 

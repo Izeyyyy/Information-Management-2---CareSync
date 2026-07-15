@@ -345,3 +345,10 @@ a.btn-action-link {
 .dashboard-card i{
     color:#2A7DE1;
 }
+
+.quick-card{
+    background:#fff;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);
+}

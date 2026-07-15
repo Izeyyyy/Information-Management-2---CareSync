@@ -1,25 +1,378 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Doctor Dashboard</title>
-</head>
-<body>
+{% extends "accounts/dashboard_base.html" %}
 
-<h1>Doctor Dashboard</h1>
 
-<p>Welcome Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</p>
+{% block title %}
+Doctor Dashboard
+{% endblock %}
+
+
+
+{% block sidebar %}
+
+<div class="logo">
+
+    <small>
+        Doctor
+    </small>
+
+</div>
 
 <hr>
 
-<h3>Your Information</h3>
 
-<ul>
-    <li>License Number: {{ doctor.license_number }}</li>
-    <li>Specialization: {{ doctor.specialization }}</li>
-    <li>Status: {{ doctor.availability_status }}</li>
-</ul>
+<a href="{% url 'doctor_dashboard' %}" class="active">
+    Dashboard
+</a>
 
-<a href="{% url 'logout' %}">Logout</a>
 
-</body>
-</html>
+<a href="{% url 'patient_list' %}">
+    Patient Records
+</a>
+
+
+<hr>
+
+
+<a href="{% url 'logout' %}">
+    Logout
+</a>
+
+
+{% endblock %}
+
+
+
+
+
+{% block header %}
+
+
+<div>
+
+    <h2>
+
+        Doctor Dashboard
+
+    </h2>
+
+    <p>
+
+        Welcome, Dr. {{ request.user.last_name }}.
+
+        Manage consultations and patient records.
+
+    </p>
+
+</div>
+
+
+<div class="profile-box">
+
+    <div>
+
+        <strong>
+
+            {{ request.user.get_full_name }}
+
+        </strong>
+
+        <br>
+
+        {{ doctor.specialization }}
+
+    </div>
+
+
+    <div class="profile-circle">
+
+        {{ request.user.first_name|first }}{{ request.user.last_name|first }}
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+
+
+<!-- Dashboard Statistics -->
+
+
+<div class="row g-4 mb-4">
+
+
+    <div class="col-md-4">
+
+
+        <div class="dashboard-card">
+
+
+            <h6 class="text-muted">
+
+                Total Consultations
+
+            </h6>
+
+
+            <h2 class="fw-bold">
+
+                {{ consultation_count }}
+
+            </h2>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <div class="col-md-4">
+
+
+        <div class="dashboard-card">
+
+
+            <h6 class="text-muted">
+
+                Today's Consultations
+
+            </h6>
+
+
+            <h2 class="fw-bold">
+
+                {{ today_consultations }}
+
+            </h2>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <div class="col-md-4">
+
+
+        <div class="dashboard-card">
+
+
+            <h6 class="text-muted">
+
+                Patients Seen
+
+            </h6>
+
+
+            <h2 class="fw-bold">
+
+                {{ patient_count }}
+
+            </h2>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<!-- Recent Consultations -->
+
+
+<div class="table-container">
+
+
+    <div class="table-title">
+
+
+        <h5>
+
+            Recent Consultations
+
+        </h5>
+
+
+    </div>
+
+
+
+
+    {% if recent_consultations %}
+
+
+
+    <div class="table-responsive">
+
+
+        <table class="table">
+
+
+            <thead>
+
+
+                <tr>
+
+                    <th>
+                        Patient
+                    </th>
+
+
+                    <th>
+                        Date
+                    </th>
+
+
+                    <th>
+                        Diagnosis
+                    </th>
+
+
+                    <th>
+                        Action
+                    </th>
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+            <tbody>
+
+
+
+            {% for consultation in recent_consultations %}
+
+
+                <tr>
+
+
+                    <td>
+
+                        {{ consultation.patient.full_name }}
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {{ consultation.patient.patient_number }}
+
+                        </small>
+
+                    </td>
+
+
+
+
+                    <td>
+
+                        {{ consultation.consultation_date|date:"M d, Y h:i A" }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        {{ consultation.diagnosis|truncatechars:40 }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        <a
+                            href="{% url 'consultation_detail' consultation.pk %}"
+                            class="btn btn-edit btn-sm">
+
+                            View
+
+                        </a>
+
+
+                    </td>
+
+
+
+                </tr>
+
+
+            {% endfor %}
+
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+
+    {% else %}
+
+
+
+    <div class="text-center py-5">
+
+
+        <h5>
+
+            No consultations yet.
+
+        </h5>
+
+
+        <p class="text-muted">
+
+            Completed consultations will appear here.
+
+        </p>
+
+
+    </div>
+
+
+
+    {% endif %}
+
+
+
+</div>
+
+
+
+{% endblock %}
