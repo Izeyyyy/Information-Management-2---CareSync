@@ -146,7 +146,7 @@ Patient Record
             Registered on {{ patient.date_registered|date:"F d, Y" }}
 
         </p>
-
+        {% if is_doctor %}
         <p class="mb-0">
 
             <strong>Total Consultations:</strong>
@@ -154,7 +154,7 @@ Patient Record
             {{ consultations.count }}
 
         </p>
-
+        {% endif %}
     </div>
 
     <div class="col-lg-3 text-end">
@@ -333,6 +333,7 @@ Patient Record
 </div>
 
 
+{% if is_doctor %}
 
 <!-- ================= CONSULTATION HISTORY ================= -->
 
@@ -474,4 +475,7 @@ Patient Record
 
 </div>
 
+{% endif %}
+
 {% endblock %}
+
