@@ -90,6 +90,17 @@ def consultation_detail(request, pk):
         pk=pk,
     )
 
+    if request.user.profile.role != "doctor":
+        messages.error(
+            request,
+            "Only doctors may access consultation records."
+        )
+
+        return redirect(
+            "patient_detail",
+            pk=consultation.patient.pk
+        )
+
     return render(
         request,
         "consultations/consultation_detail.html",
